@@ -40,6 +40,7 @@ func checkError(err error) {
 	}
 }
 
+// add each player's hand in a array for each game
 func splitPlayersHand(hands []string) [][]string {
 	var allHands [][]string
 	for _, hand := range hands {
@@ -49,6 +50,7 @@ func splitPlayersHand(hands []string) [][]string {
 	return allHands
 }
 
+// Split ranks and suits into separate slices
 func splitRanksAndSuits(singleHand string) ([]int64, []string) {
 	var ranks []int64
 	var suits []string
@@ -61,6 +63,7 @@ func splitRanksAndSuits(singleHand string) ([]int64, []string) {
 	return ranks, suits
 }
 
+// Assign integer value to the hand for easy comparision
 func changeRankToInt(stringRank string) (int64, error) {
 	var intRank int64
 	if stringRank == "J" {
@@ -78,6 +81,7 @@ func changeRankToInt(stringRank string) (int64, error) {
 	return intRank, nil
 }
 
+// Checks if the hand is straight
 func isStraight(ranks []int64) (bool, int64) {
 	for i := 0; i < len(ranks)-1; i++ {
 		if (ranks[i+1] - ranks[i]) != 1 {
@@ -87,6 +91,7 @@ func isStraight(ranks []int64) (bool, int64) {
 	return true, ranks[len(ranks)-1]
 }
 
+//Checks if all the suits in a hand are same
 func isSameSuit(suits []string) bool {
 	for i := 0; i < len(suits)-1; i++ {
 		if suits[i] != suits[i+1] {
