@@ -78,6 +78,24 @@ func changeRankToInt(stringRank string) (int64, error) {
 	return intRank, nil
 }
 
+func isStraight(ranks []int64) (bool, int64) {
+	for i := 0; i < len(ranks)-1; i++ {
+		if (ranks[i+1] - ranks[i]) != 1 {
+			return false, ranks[len(ranks)-1]
+		}
+	}
+	return true, ranks[len(ranks)-1]
+}
+
+func isSameSuit(suits []string) bool {
+	for i := 0; i < len(suits)-1; i++ {
+		if suits[i] != suits[i+1] {
+			return false
+		}
+	}
+	return true
+}
+
 func main() {
 	hands, err := getHandFromFile("hand.txt")
 	checkError(err)
