@@ -101,6 +101,15 @@ func isSameSuit(suits []string) bool {
 	return true
 }
 
+func isRoyalFlush(ranks []int64, suits []string) bool {
+	isSameSuit := isSameSuit(suits)
+	isStraight, highRank := isStraight(ranks)
+	if isSameSuit && isStraight && highRank == 14 {
+		return true
+	}
+	return false
+}
+
 func main() {
 	hands, err := getHandFromFile("hand.txt")
 	checkError(err)
