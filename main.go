@@ -101,13 +101,41 @@ func isSameSuit(suits []string) bool {
 	return true
 }
 
+// Check Royal Flush
 func isRoyalFlush(ranks []int64, suits []string) bool {
-	isSameSuit := isSameSuit(suits)
-	isStraight, highRank := isStraight(ranks)
-	if isSameSuit && isStraight && highRank == 14 {
+	isStraightNSameSuit, highRank := isStraightNSameSuit(ranks, suits)
+	if isStraightNSameSuit && highRank == 14 {
 		return true
 	}
 	return false
+}
+
+// Check Straight Flush
+func isStraightFlush(ranks []int64, suits []string) (bool, int64) {
+	isStraightNSameSuit, highRank := isStraightNSameSuit(ranks, suits)
+	if isStraightNSameSuit && highRank != 14 {
+		return true, highRank
+	}
+	return false, highRank
+}
+
+// Check if it is straight and flush
+func isStraightNSameSuit(ranks []int64, suits []string) (bool, int64) {
+	isSameSuit := isSameSuit(suits)
+	isStraight, highRank := isStraight(ranks)
+	if isSameSuit && isStraight {
+		return true, highRank
+	}
+	return false, highRank
+}
+
+// Counting the number of pairs
+func countingSameRanks(ranks []int64) map[int64]int64 {
+	pairMap := make(map[int64]int64)
+	for _, rank := range ranks {
+		pairMap[rank]++
+	}
+	return pairMap
 }
 
 func main() {
