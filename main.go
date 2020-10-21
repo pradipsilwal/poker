@@ -9,6 +9,28 @@ import (
 	"strings"
 )
 
+// Card value of the hand
+// Hand with the lowest number is the strongest hand
+const (
+	ROYALFLUSH    = 1
+	STRAIGHTFLUSH = 2
+	FOUROFAKIND   = 3
+	FULLHOUSE     = 4
+	FLUSH         = 5
+	STRAIGHT      = 6
+	THREEOFAKIND  = 7
+	TWOPAIRS      = 8
+	PAIRS         = 9
+	HIGHCARD      = 10
+)
+
+type handStrength struct {
+	strength        int64
+	highRank        int64
+	onePairHighRank int64
+	twoPairHighRank int64
+}
+
 func removeSpaces(line string) string {
 	line = strings.ReplaceAll(line, " ", "")
 	return line
@@ -41,24 +63,24 @@ func checkError(err error) {
 }
 
 // add each player's hand in a array for each game
-func splitPlayersHand(hands []string) [][]string {
-	var allHands [][]string
-	for _, hand := range hands {
+func splitPlayersHand(allHands []string) [][]string {
+	var singleHand [][]string
+	for _, hand := range allHands {
 		row := []string{hand[:10], hand[10:]}
-		allHands = append(allHands, row)
+		singleHand = append(singleHand, row)
 	}
-	return allHands
+	return singleHand
 }
 
 // Split ranks and suits into separate slices
-func splitRanksAndSuits(singleHand string) ([]int64, []string) {
+func splitRanksAndSuits(singlePlayerHand string) ([]int64, []string) {
 	var ranks []int64
 	var suits []string
-	for i := 0; i < len(singleHand); i += 2 {
-		rankVal, err := changeRankToInt(string(singleHand[i]))
+	for i := 0; i < len(singlePlayerHand); i += 2 {
+		rankVal, err := changeRankToInt(string(singlePlayerHand[i]))
 		checkError(err)
 		ranks = append(ranks, rankVal)
-		suits = append(suits, string(singleHand[i+1]))
+		suits = append(suits, string(singlePlayerHand[i+1]))
 	}
 	return ranks, suits
 }
@@ -66,7 +88,9 @@ func splitRanksAndSuits(singleHand string) ([]int64, []string) {
 // Assign integer value to the hand for easy comparision
 func changeRankToInt(stringRank string) (int64, error) {
 	var intRank int64
-	if stringRank == "J" {
+	if stringRank == "T" {
+		intRank = 10
+	} else if stringRank == "J" {
 		intRank = 11
 	} else if stringRank == "Q" {
 		intRank = 12
@@ -138,11 +162,72 @@ func countingSameRanks(ranks []int64) map[int64]int64 {
 	return pairMap
 }
 
+func calculateWinner(singleHand []string) {
+	var varHandStrength []handStrength
+	for _, hand := range singleHand {
+		var singleHandStrength handStrength
+		ranks, suits := splitRanksAndSuits(hand)
+		fmt.Println(ranks, suits)
+		if isRoyalFlush(ranks, suits) {
+			singleHandStrength.strength = ROYALFLUSH
+		} else if status, highRank := isStraightFlush(ranks, suits); status {
+			singleHandStrength.strength = STRAIGHTFLUSH
+			singleHandStrength.highRank = highRank
+		} else if isSameSuit(suits) {
+			singleHandStrength.strength = FLUSH
+		} else if status, highRank := isStraight(ranks); status {
+			singleHandStrength.strength = STRAIGHT
+			singleHandStrength.highRank = highRank
+		} else {
+			pairMap := countingSameRanks(ranks)
+			if len(pairMap) == 2 {
+				k := getKey(pairMap, 4)[0]
+				if k != 0 {
+					singleHandStrength.strength = FOUROFAKIND
+					singleHandStrength.onePairHighRank = k
+				} else {
+					singleHandStrength.strength = FULLHOUSE
+					singleHandStrength.twoPairHighRank = getKey(pairMap, 3)[0]
+				}
+			} else if len(pairMap) == 3 {
+				k := getKey(pairMap, 3)[0]
+				if k != 0 {
+					singleHandStrength.strength = THREEOFAKIND
+					singleHandStrength.onePairHighRank = k
+				} else {
+					singleHandStrength.strength = TWOPAIRS
+					key := getKey(pairMap, 2)
+					singleHandStrength.onePairHighRank = key[0]
+					singleHandStrength.twoPairHighRank = key[1]
+					singleHandStrength.highRank = getKey(pairMap, 1)[0]
+				}
+			} else if len(pairMap) == 4 {
+				singleHandStrength.strength = PAIRS
+				singleHandStrength.onePairHighRank = getKey(pairMap, 2)[0]
+			} else {
+				singleHandStrength.strength = HIGHCARD
+			}
+		}
+		varHandStrength = append(varHandStrength, singleHandStrength)
+	}
+	fmt.Println(varHandStrength)
+}
+
+func getKey(myMap map[int64]int64, value int64) []int64 {
+	var key []int64
+	for k, v := range myMap {
+		if value == v {
+			key = append(key, k)
+		}
+	}
+	return key
+}
+
 func main() {
-	hands, err := getHandFromFile("hand.txt")
+	allHands, err := getHandFromFile("hand.txt")
 	checkError(err)
-	allHands := splitPlayersHand(hands)
-	ranks, suits := splitRanksAndSuits(allHands[0][0])
-	fmt.Println(ranks)
-	fmt.Println(suits)
+	singleHand := splitPlayersHand(allHands)
+	for _, hand := range singleHand {
+		calculateWinner(hand)
+	}
 }
