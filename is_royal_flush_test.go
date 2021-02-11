@@ -13,20 +13,22 @@ type royalFlushData struct {
 
 func TestIsRoyalFlush(t *testing.T) {
 	testData := []royalFlushData{
-		royalFlushData{listRanks: []int64{10, 11, 12, 13, 14}, listSuits: []string{"D", "H", "D", "S", "D"},
+		{listRanks: []int64{10, 11, 12, 13, 14}, listSuits: []string{"D", "H", "D", "S", "D"},
 			wantIsFlush: false},
-		royalFlushData{listRanks: []int64{10, 11, 12, 13, 14}, listSuits: []string{"D", "D", "D", "S", "D"},
+		{listRanks: []int64{10, 11, 12, 13, 14}, listSuits: []string{"D", "D", "D", "S", "D"},
 			wantIsFlush: false},
-		royalFlushData{listRanks: []int64{10, 11, 12, 13, 14}, listSuits: []string{"H", "H", "D", "H", "D"},
+		{listRanks: []int64{10, 11, 12, 13, 14}, listSuits: []string{"H", "H", "D", "H", "D"},
 			wantIsFlush: false},
-		royalFlushData{listRanks: []int64{10, 11, 12, 13, 14}, listSuits: []string{"D", "D", "D", "D", "D"},
+		{listRanks: []int64{10, 11, 12, 13, 14}, listSuits: []string{"D", "D", "D", "D", "D"},
 			wantIsFlush: true},
-		royalFlushData{listRanks: []int64{9, 10, 11, 12, 13}, listSuits: []string{"D", "D", "D", "D", "D"},
+		{listRanks: []int64{9, 10, 11, 12, 13}, listSuits: []string{"D", "D", "D", "D", "D"},
 			wantIsFlush: false},
-		royalFlushData{listRanks: []int64{10, 11, 11, 13, 14}, listSuits: []string{"D", "D", "H", "D", "D"},
+		{listRanks: []int64{10, 11, 11, 13, 14}, listSuits: []string{"D", "D", "H", "D", "D"},
 			wantIsFlush: false},
-		royalFlushData{listRanks: []int64{5, 10, 11, 12, 13}, listSuits: []string{"D", "D", "D", "D", "D"},
+		{listRanks: []int64{5, 10, 11, 12, 13}, listSuits: []string{"D", "D", "D", "D", "D"},
 			wantIsFlush: false},
+		// royalFlushData{listRanks: []int64{5, 10, 11, 12, 13}, listSuits: []string{"D", "D", "D", "D", "D"},
+		// wantIsFlush: false},
 	}
 	for _, test := range testData {
 		gotIsFlush := isRoyalFlush(test.listRanks, test.listSuits)

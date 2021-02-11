@@ -31,6 +31,9 @@ type handStrength struct {
 	twoPairHighRank int64
 }
 
+var playerOneWins int64
+var playerTwoWins int64
+
 func removeSpaces(line string) string {
 	line = strings.ReplaceAll(line, " ", "")
 	return line
@@ -163,11 +166,18 @@ func countingSameRanks(ranks []int64) map[int64]int64 {
 }
 
 func calculateWinner(singleHand []string) {
+	points := calculatePoints(singleHand)
+	fmt.Println(points[0])
+	fmt.Println(points[1])
+
+}
+
+// Calculate points for each hand of each user and add it in a slice
+func calculatePoints(singleHand []string) []handStrength {
 	var varHandStrength []handStrength
 	for _, hand := range singleHand {
 		var singleHandStrength handStrength
 		ranks, suits := splitRanksAndSuits(hand)
-		fmt.Println(ranks, suits)
 		if isRoyalFlush(ranks, suits) {
 			singleHandStrength.strength = ROYALFLUSH
 		} else if status, highRank := isStraightFlush(ranks, suits); status {
@@ -181,19 +191,17 @@ func calculateWinner(singleHand []string) {
 		} else {
 			pairMap := countingSameRanks(ranks)
 			if len(pairMap) == 2 {
-				k := getKey(pairMap, 4)[0]
-				if k != 0 {
+				if getKey(pairMap, 4) != nil {
 					singleHandStrength.strength = FOUROFAKIND
-					singleHandStrength.onePairHighRank = k
+					singleHandStrength.onePairHighRank = getKey(pairMap, 4)[0]
 				} else {
 					singleHandStrength.strength = FULLHOUSE
 					singleHandStrength.twoPairHighRank = getKey(pairMap, 3)[0]
 				}
 			} else if len(pairMap) == 3 {
-				k := getKey(pairMap, 3)[0]
-				if k != 0 {
+				if getKey(pairMap, 3) != nil {
 					singleHandStrength.strength = THREEOFAKIND
-					singleHandStrength.onePairHighRank = k
+					singleHandStrength.onePairHighRank = getKey(pairMap, 3)[0]
 				} else {
 					singleHandStrength.strength = TWOPAIRS
 					key := getKey(pairMap, 2)
@@ -210,7 +218,7 @@ func calculateWinner(singleHand []string) {
 		}
 		varHandStrength = append(varHandStrength, singleHandStrength)
 	}
-	fmt.Println(varHandStrength)
+	return varHandStrength
 }
 
 func getKey(myMap map[int64]int64, value int64) []int64 {
@@ -228,6 +236,8 @@ func main() {
 	checkError(err)
 	singleHand := splitPlayersHand(allHands)
 	for _, hand := range singleHand {
+
+		//calculate winner for each hand
 		calculateWinner(hand)
 	}
 }

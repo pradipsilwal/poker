@@ -14,20 +14,22 @@ type straightNSameSuits struct {
 
 func TestIsStraightNSameSuit(t *testing.T) {
 	testData := []straightNSameSuits{
-		straightNSameSuits{listRanks: []int64{10, 11, 12, 13, 14}, listSuits: []string{"D", "H", "D", "S", "D"},
+		{listRanks: []int64{10, 11, 12, 13, 14}, listSuits: []string{"D", "H", "D", "S", "D"},
 			wantStraightNSameSuits: false, wantHighRank: 14},
-		straightNSameSuits{listRanks: []int64{10, 11, 12, 13, 14}, listSuits: []string{"D", "D", "D", "S", "D"},
+		{listRanks: []int64{10, 11, 12, 13, 14}, listSuits: []string{"D", "D", "D", "S", "D"},
 			wantStraightNSameSuits: false, wantHighRank: 14},
-		straightNSameSuits{listRanks: []int64{10, 11, 12, 13, 14}, listSuits: []string{"H", "H", "D", "H", "D"},
+		{listRanks: []int64{10, 11, 12, 13, 14}, listSuits: []string{"H", "H", "D", "H", "D"},
 			wantStraightNSameSuits: false, wantHighRank: 14},
-		straightNSameSuits{listRanks: []int64{10, 11, 12, 13, 14}, listSuits: []string{"D", "D", "D", "D", "D"},
+		{listRanks: []int64{10, 11, 12, 13, 14}, listSuits: []string{"D", "D", "D", "D", "D"},
 			wantStraightNSameSuits: true, wantHighRank: 14},
-		straightNSameSuits{listRanks: []int64{9, 10, 11, 12, 13}, listSuits: []string{"D", "D", "D", "D", "D"},
+		{listRanks: []int64{9, 10, 11, 12, 13}, listSuits: []string{"D", "D", "D", "D", "D"},
 			wantStraightNSameSuits: true, wantHighRank: 13},
-		straightNSameSuits{listRanks: []int64{10, 11, 11, 13, 14}, listSuits: []string{"D", "D", "H", "D", "D"},
+		{listRanks: []int64{10, 11, 11, 13, 14}, listSuits: []string{"D", "D", "H", "D", "D"},
 			wantStraightNSameSuits: false, wantHighRank: 14},
-		straightNSameSuits{listRanks: []int64{5, 10, 11, 12, 13}, listSuits: []string{"D", "D", "D", "D", "D"},
+		{listRanks: []int64{5, 10, 11, 12, 13}, listSuits: []string{"D", "D", "D", "D", "D"},
 			wantStraightNSameSuits: false, wantHighRank: 13},
+		// straightNSameSuits{listRanks: []int64{5, 10, 11, 12, 13}, listSuits: []string{"D", "D", "D", "D", "D"},
+		// 	wantStraightNSameSuits: false, wantHighRank: 13},
 	}
 	for _, test := range testData {
 		gotStraightNSameSuits, gotHighRank := isStraightNSameSuit(test.listRanks, test.listSuits)
