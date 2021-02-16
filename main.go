@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -167,9 +166,9 @@ func countingSameRanks(ranks []int64) map[int64]int64 {
 
 func calculateWinner(singleHand []string) {
 	points := calculatePoints(singleHand)
-	fmt.Println(points[0])
-	fmt.Println(points[1])
+	for _, point := range points {
 
+	}
 }
 
 // Calculate points for each hand of each user and add it in a slice
@@ -185,6 +184,7 @@ func calculatePoints(singleHand []string) []handStrength {
 			singleHandStrength.highRank = highRank
 		} else if isSameSuit(suits) {
 			singleHandStrength.strength = FLUSH
+			//TODO need more -- calculate high rank
 		} else if status, highRank := isStraight(ranks); status {
 			singleHandStrength.strength = STRAIGHT
 			singleHandStrength.highRank = highRank
